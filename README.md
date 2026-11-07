@@ -6,17 +6,17 @@ Aplicação fullstack em Rust para cadastrar e consultar ativos de investimento.
 
 ## Telas do FinTrack
 
-### Carteira
+### Login
 
-![Carteira do FinTrack com posições e histórico de compras](docs/images/fintrack-carteira.jpg)
+![Tela de login do FinTrack](docs/images/fintrack-login.jpg)
 
 ### Registrar compra
 
 ![Formulário de registro de compra do FinTrack](docs/images/fintrack-compra.jpg)
 
-### Login
+### Carteira
 
-![Tela de login do FinTrack](docs/images/fintrack-login.jpg)
+![Carteira do FinTrack com posições e histórico de compras](docs/images/fintrack-carteira.jpg)
 
 ## Tecnologias e estrutura MVC
 
