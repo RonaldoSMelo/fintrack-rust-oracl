@@ -1,12 +1,19 @@
 {% extends "portfolio_base.html" %}
 {% block content %}
-<header>
-  <h1>Minha carteira</h1>
-  <span class="muted">Olá, {{ username }}</span>
+<header class="page-heading">
+  <div class="intro">
+    <p class="eyebrow">Visão geral</p>
+    <h1>Minha carteira</h1>
+    <p class="muted">Olá, {{ username }}. Acompanhe suas posições e compras.</p>
+  </div>
+  <div class="actions">
+    <a class="button primary" href="/assets/purchase">Registrar compra</a>
+    <form action="/logout" method="post"><button type="submit">Sair</button></form>
+  </div>
 </header>
 {% if positions.is_empty() %}
 <div class="panel empty">
-  <p>Você ainda não registrou compras.</p>
+  <h2>Você ainda não registrou compras.</h2>
   <p class="muted">Registre sua primeira compra para acompanhar a posição e o histórico do ativo.</p>
 </div>
 {% else %}
@@ -14,7 +21,7 @@
   <table>
     <caption>Posições e histórico de compras · horários em UTC</caption>
     <thead>
-      <tr><th scope="col">Ativo</th><th scope="col">Quantidade</th><th scope="col">Valor atual</th><th scope="col">Variação</th></tr>
+      <tr><th scope="col">Ativo</th><th scope="col">Quantidade</th><th scope="col">Valor unitário atual</th><th scope="col">Variação</th></tr>
     </thead>
     {% for position in positions %}
     <tbody>
@@ -40,8 +47,4 @@
   </table>
 </div>
 {% endif %}
-<div class="actions">
-  <a class="button primary" href="/assets/purchase">Registrar compra</a>
-  <form action="/logout" method="post"><button type="submit">Sair</button></form>
-</div>
 {% endblock %}

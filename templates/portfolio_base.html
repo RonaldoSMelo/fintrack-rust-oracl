@@ -5,39 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Carteira · FinTrack{% endblock %}</title>
   <style>
-    :root { color-scheme: dark; font-family: "Space Mono", ui-monospace, Consolas, monospace; background: #040714; color: #e5e7eb; }
+    :root {
+      font-family: system-ui, sans-serif;
+      color: #172b27;
+      background: #f4f7f6;
+      --muted: #536762;
+      --border: #dce6e2;
+      --accent: #116553;
+      --accent-hover: #0c5142;
+    }
     * { box-sizing: border-box; }
-    main { max-width: 850px; margin: 0 auto; padding: 3rem 1rem; }
-    header, .actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
-    h1 { margin: 0; font-size: 1.45rem; }
-    p { line-height: 1.5; }
-    .muted, th { color: #a3adc2; }
-    .panel { margin: 1.25rem 0; border: 1px solid #293146; border-radius: 1rem; background: #111625; overflow: hidden; }
-    .empty, .purchase-form { padding: 1.25rem; }
+    body { margin: 0; }
+    .topbar { background: #fff; border-bottom: 1px solid var(--border); }
+    .shell { width: min(100% - 2rem, 72rem); margin-inline: auto; }
+    .topbar .shell { display: flex; align-items: center; gap: .7rem; min-height: 4rem; font-weight: 750; }
+    .brand-mark { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .6rem; background: var(--accent); color: #fff; font-size: .75rem; }
+    .brand-author { color: var(--muted); font-size: .85rem; font-weight: 500; }
+    main { padding-block: clamp(1.5rem, 5vw, 4rem); }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.65rem); line-height: 1.12; letter-spacing: -.04em; }
+    h2 { font-size: 1.15rem; }
+    p { line-height: 1.55; }
+    .muted, th, caption { color: var(--muted); }
+    .eyebrow { color: var(--accent); font-size: .75rem; text-transform: uppercase; font-weight: 750; letter-spacing: .1em; }
+    .page-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+    .intro { display: grid; gap: .55rem; }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; }
+    .panel { background: #fff; border: 1px solid var(--border); border-radius: 1rem; box-shadow: 0 4px 16px #17372b08; }
+    .empty, .purchase-form, .auth-card { padding: clamp(1.15rem, 4vw, 2rem); }
+    .empty { display: grid; gap: .4rem; }
     .table-scroll { overflow-x: auto; }
-    table { width: 100%; min-width: 34rem; border-collapse: collapse; }
-    caption { text-align: left; padding: .85rem 1rem .25rem; color: #a3adc2; font-size: .8rem; }
-    th, td { padding: .65rem 1rem; text-align: right; white-space: nowrap; }
+    table { width: 100%; min-width: 37rem; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    caption { text-align: left; padding: 1rem 1.25rem; font-size: .85rem; }
+    th, td { padding: .75rem 1.25rem; text-align: right; white-space: nowrap; }
     th:first-child, td:first-child { text-align: left; }
-    thead th { font-size: .74rem; text-transform: uppercase; }
-    .position { background: #181e30; font-weight: bold; }
-    .history-heading th, .history td { font-size: .8rem; }
-    .history td { border-top: 1px solid #20273a; }
-    .gain { color: #6ee7b7; }
-    .loss { color: #fda4af; }
-    .actions { justify-content: flex-start; }
+    thead th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+    .position { background: #edf5f2; font-weight: 700; }
+    .position th { color: inherit; }
+    .history-heading th, .history td { font-size: .85rem; }
+    .history td { border-top: 1px solid var(--border); }
+    .gain { color: #146347; }
+    .loss { color: #a12d3f; }
     button, .button, select, input { font: inherit; }
-    button, .button { display: inline-block; padding: .65rem .9rem; border-radius: .65rem; border: 1px solid #36405a; background: #191f30; color: #e5e7eb; text-decoration: none; cursor: pointer; }
-    .primary { color: #67e8f9; background: #0c2d3b; border-color: #186174; }
-    button:hover, .button:hover { filter: brightness(1.2); }
-    :focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; }
-    .purchase-form { display: grid; gap: 1rem; }
-    label { display: grid; gap: .45rem; }
-    input, select { min-width: 0; width: 100%; border: 1px solid #36405a; border-radius: .55rem; background: #181e30; color: inherit; padding: .65rem; }
-    .error { color: #fda4af; }
+    button, .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 2.75rem; padding: .6rem 1rem; border-radius: .65rem;
+      border: 1px solid var(--border); background: #fff; color: inherit;
+      font-weight: 650; text-decoration: none; cursor: pointer;
+    }
+    button:hover, .button:hover { background: #eef4f1; }
+    .primary { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .primary:hover { background: var(--accent-hover); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .narrow { max-width: 40rem; margin-inline: auto; }
+    .auth-card { max-width: 29rem; margin-inline: auto; }
+    .form-stack { display: grid; gap: 1rem; }
+    .auth-card .form-stack { margin-block: 1.5rem 1rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    label { display: grid; gap: .4rem; font-weight: 600; }
+    input, select { min-width: 0; width: 100%; min-height: 2.75rem; border: 1px solid #b8cac3; border-radius: .55rem; background: #fff; color: inherit; padding: .6rem .75rem; }
+    .error { color: #8b2335; background: #fff0f2; border-radius: .65rem; padding: .8rem 1rem; margin-bottom: 1rem; }
+    @media (max-width: 36rem) {
+      .form-grid { grid-template-columns: 1fr; }
+      th, td { padding-inline: .8rem; }
+    }
   </style>
 </head>
 <body>
-  <main>{% block content %}{% endblock %}</main>
+  <header class="topbar">
+    <div class="shell">
+      <span class="brand-mark" aria-hidden="true">FT</span>
+      <span>FinTrack</span>
+      <span class="brand-author">· Ronaldo Melo</span>
+    </div>
+  </header>
+  <main class="shell">{% block content %}{% endblock %}</main>
 </body>
 </html>

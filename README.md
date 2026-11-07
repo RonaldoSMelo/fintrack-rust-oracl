@@ -4,7 +4,19 @@
 
 Aplicação fullstack em Rust para cadastrar e consultar ativos de investimento. Após o login, a interface web mostra a carteira do usuário, com posições, variação e histórico de compras. A API lista, cria e atualiza os ativos disponíveis no catálogo.
 
-Projeto desenvolvido a partir do [repositório-base do desafio da DIO](https://github.com/digitalinnovationone/rust-fullstack-carteira-investimentos).
+## Telas do FinTrack
+
+### Carteira
+
+![Carteira do FinTrack com posições e histórico de compras](docs/images/fintrack-carteira.jpg)
+
+### Registrar compra
+
+![Formulário de registro de compra do FinTrack](docs/images/fintrack-compra.jpg)
+
+### Login
+
+![Tela de login do FinTrack](docs/images/fintrack-login.jpg)
 
 ## Tecnologias e estrutura MVC
 

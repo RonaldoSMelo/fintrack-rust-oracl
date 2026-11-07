@@ -1,33 +1,41 @@
 {% extends "portfolio_base.html" %}
 {% block title %}Registrar compra · FinTrack{% endblock %}
 {% block content %}
-<h1>Registrar compra</h1>
-{% if let Some(message) = error %}<p class="error" role="alert">{{ message }}</p>{% endif %}
-{% if assets.is_empty() %}
-<div class="panel empty">
-  <p>O catálogo está vazio. Cadastre um ativo na API para registrar uma compra.</p>
-</div>
-<a class="button" href="/assets">Voltar à carteira</a>
-{% else %}
-<form class="panel purchase-form" method="post" action="/assets/purchase">
-  <label>Ativo
-    <select name="asset_id" required>
-      <option value="" selected disabled>Selecione um ativo</option>
-      {% for asset in assets %}
-      <option value="{{ asset.id }}">{{ asset.name }}</option>
-      {% endfor %}
-    </select>
-  </label>
-  <label>Quantidade
-    <input name="quantity" type="number" min="0.00000001" max="9999999999" step="0.00000001" required>
-  </label>
-  <label>Preço pago por unidade (R$)
-    <input name="unit_price" type="number" min="0.00000001" max="9999999999" step="0.00000001" required>
-  </label>
-  <div class="actions">
-    <button class="primary" type="submit">Registrar compra</button>
-    <a class="button" href="/assets">Voltar à carteira</a>
+<section class="narrow" aria-labelledby="purchase-title">
+  <header class="page-heading intro">
+    <p class="eyebrow">Minha carteira</p>
+    <h1 id="purchase-title">Registrar compra</h1>
+    <p class="muted">Adicione uma operação ao histórico da sua carteira.</p>
+  </header>
+  {% if let Some(message) = error %}<p class="error" role="alert">{{ message }}</p>{% endif %}
+  {% if assets.is_empty() %}
+  <div class="panel empty">
+    <p>O catálogo está vazio. Cadastre um ativo na API para registrar uma compra.</p>
+    <div class="actions"><a class="button" href="/assets">Voltar à carteira</a></div>
   </div>
-</form>
-{% endif %}
+  {% else %}
+  <form class="panel purchase-form form-stack" method="post" action="/assets/purchase">
+    <label>Ativo
+      <select name="asset_id" required>
+        <option value="" selected disabled>Selecione um ativo</option>
+        {% for asset in assets %}
+        <option value="{{ asset.id }}">{{ asset.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="form-grid">
+      <label>Quantidade
+        <input name="quantity" type="number" inputmode="decimal" min="0.00000001" max="9999999999" step="0.00000001" required>
+      </label>
+      <label>Preço pago por unidade (R$)
+        <input name="unit_price" type="number" inputmode="decimal" min="0.00000001" max="9999999999" step="0.00000001" required>
+      </label>
+    </div>
+    <div class="actions">
+      <button class="primary" type="submit">Registrar compra</button>
+      <a class="button" href="/assets">Voltar à carteira</a>
+    </div>
+  </form>
+  {% endif %}
+</section>
 {% endblock %}
