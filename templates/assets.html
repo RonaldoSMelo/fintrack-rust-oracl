@@ -1,0 +1,47 @@
+{% extends "portfolio_base.html" %}
+{% block content %}
+<header>
+  <h1>Minha carteira</h1>
+  <span class="muted">Olá, {{ username }}</span>
+</header>
+{% if positions.is_empty() %}
+<div class="panel empty">
+  <p>Você ainda não registrou compras.</p>
+  <p class="muted">Registre sua primeira compra para acompanhar a posição e o histórico do ativo.</p>
+</div>
+{% else %}
+<div class="panel table-scroll" tabindex="0" role="region" aria-label="Posições e histórico de compras">
+  <table>
+    <caption>Posições e histórico de compras · horários em UTC</caption>
+    <thead>
+      <tr><th scope="col">Ativo</th><th scope="col">Quantidade</th><th scope="col">Valor atual</th><th scope="col">Variação</th></tr>
+    </thead>
+    {% for position in positions %}
+    <tbody>
+      <tr class="position">
+        <th scope="row">{{ position.asset.name }}</th>
+        <td>{{ crate::routes::frontend::quantity_text(position.quantity.to_owned()) }}</td>
+        <td>{{ crate::routes::frontend::money(position.asset.unit_value.to_owned()) }}</td>
+        <td class="{{ crate::routes::frontend::change_class(position.change.to_owned()) }}">{{ crate::routes::frontend::signed_money(position.change.to_owned()) }}</td>
+      </tr>
+      <tr class="history-heading">
+        <th scope="col">Data da compra</th><th scope="col">Quantidade</th><th scope="col">Preço pago por unidade</th><th scope="col">Variação</th>
+      </tr>
+      {% for purchase in position.purchases %}
+      <tr class="history">
+        <td>{{ purchase.purchased_at }}</td>
+        <td>{{ crate::routes::frontend::quantity_text(purchase.quantity.to_owned()) }}</td>
+        <td>{{ crate::routes::frontend::money(purchase.unit_price.to_owned()) }}</td>
+        <td class="{{ crate::routes::frontend::change_class(purchase.change()) }}">{{ crate::routes::frontend::signed_money(purchase.change()) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+<div class="actions">
+  <a class="button primary" href="/assets/purchase">Registrar compra</a>
+  <form action="/logout" method="post"><button type="submit">Sair</button></form>
+</div>
+{% endblock %}

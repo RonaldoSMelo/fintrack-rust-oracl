@@ -2,13 +2,13 @@
 
 **Criador desta versão:** Ronaldo Melo
 
-Aplicação fullstack em Rust para cadastrar e consultar ativos de investimento. A interface web oferece cadastro e login, com sessão mantida por cookie e JWT. A API lista, cria e atualiza ativos.
+Aplicação fullstack em Rust para cadastrar e consultar ativos de investimento. Após o login, a interface web mostra a carteira do usuário, com posições, variação e histórico de compras. A API lista, cria e atualiza os ativos disponíveis no catálogo.
 
 Projeto desenvolvido a partir do [repositório-base do desafio da DIO](https://github.com/digitalinnovationone/rust-fullstack-carteira-investimentos).
 
 ## Tecnologias e estrutura MVC
 
-- **Model** — `src/models.rs` define ativos e usuários. `src/repository.rs` concentra consultas e transações Oracle. `src/db.rs` configura o pool de conexões e executa o driver síncrono fora das threads assíncronas do Tokio.
+- **Model** — `src/models.rs` define ativos, usuários e compras. `src/repository.rs` concentra consultas e transações Oracle. `src/db.rs` configura o pool de conexões e executa o driver síncrono fora das threads assíncronas do Tokio.
 - **View** — `templates/` contém os templates HTML renderizados pelo Askama.
 - **Controller** — `src/routes/` contém os handlers Axum da API e da interface web. `src/auth/` implementa a autenticação com cookies, JWT e hash de senha.
 - **Inicialização** — `src/app.rs` monta a aplicação. `migrations/` contém o SQL versionado do Oracle Database.
@@ -40,29 +40,33 @@ GRANT CREATE SESSION, CREATE TABLE, CREATE SEQUENCE TO fintrack;
 EXIT
 ```
 
-Preencha o `.env` com a senha do schema. Para aplicar a migração, copie o SQL para o contêiner e entre como o usuário da aplicação. O SQL*Plus solicitará a senha.
+Preencha o `.env` com a senha do schema. Copie as migrações para o contêiner e entre como o usuário da aplicação. O SQL*Plus solicitará a senha.
 
 ```powershell
 docker cp migrations/001_create_tables.sql oracle26ai:/tmp/fintrack-schema.sql
+docker cp migrations/002_create_purchases.sql oracle26ai:/tmp/fintrack-purchases.sql
 docker exec -it oracle26ai sqlplus fintrack@//localhost:1521/FREEPDB1
 ```
 
 ```sql
 @/tmp/fintrack-schema.sql
+@/tmp/fintrack-purchases.sql
 EXIT
 ```
 
-A migração pode ser reaplicada. Em seguida, execute `cargo run --locked` e abra [a página de login](http://localhost:3000/login). O primeiro login com um nome novo cria a conta. Na máquina em que o schema já foi provisionado, basta usar o `.env` local e iniciar a aplicação.
+As migrações podem ser reaplicadas. Em seguida, execute `cargo run --locked` e abra [a página de login](http://localhost:3000/login). O primeiro login com um nome novo cria a conta. O login leva à carteira em `/assets`.
+
+Na carteira, use **Registrar compra** para selecionar um ativo do catálogo e informar a quantidade e o preço pago por unidade. O histórico fica vinculado ao usuário autenticado. A variação é a diferença entre o valor unitário atual do catálogo e o preço pago, multiplicada pela quantidade comprada. O painel soma as variações das compras por ativo.
 
 ## Como testar
 
-Com o Oracle ativo, as credenciais no `.env` e a migração aplicada, execute:
+Com o Oracle ativo, as credenciais no `.env` e as migrações aplicadas, execute:
 
 ```powershell
 cargo test --locked -- --include-ignored
 ```
 
-O teste de integração cria dados com nomes exclusivos, verifica cadastro, listagem e atualização de ativos, cadastro e autenticação de usuários e tratamento de usuário duplicado. Ao terminar, ele limpa os registros que criou.
+O teste de integração verifica operações de ativos, autenticação, registro de compra, cálculo de variação e filtragem do histórico pelo usuário. Ao terminar, ele limpa os registros que criou.
 
 Para testar pela API com a aplicação em execução:
 

@@ -128,11 +128,27 @@ mod tests {
                 credentials().register(&repo).await,
                 Err(AppError::UsernameTaken)
             ));
+            ensure!(!repo.register_purchase(user.id(), -1, 1.0, 10.0).await?);
+            ensure!(
+                repo.register_purchase(user.id(), created.id, 2.5, 12.0)
+                    .await?
+            );
+            let purchases = repo.list_purchases(user.id()).await?;
+            ensure!(purchases.len() == 1, "expected one recorded purchase");
+            let purchase = &purchases[0];
+            ensure!(purchase.asset.id == created.id);
+            ensure!(purchase.quantity == 2.5 && purchase.unit_price == 12.0);
+            ensure!(purchase.change() == 20.0, "unexpected position change");
+            ensure!(repo.list_purchases(-1).await?.is_empty());
             Ok::<_, color_eyre::Report>(())
         }
         .await;
 
         db.run(move |conn| {
+            conn.execute(
+                "DELETE FROM purchases WHERE user_id = (SELECT id FROM users WHERE username = :1)",
+                &[&username],
+            )?;
             conn.execute("DELETE FROM assets WHERE name = :1", &[&name])?;
             conn.execute("DELETE FROM users WHERE username = :1", &[&username])?;
             conn.commit()

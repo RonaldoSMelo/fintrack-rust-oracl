@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Carteira · FinTrack{% endblock %}</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Space Mono", ui-monospace, Consolas, monospace; background: #040714; color: #e5e7eb; }
+    * { box-sizing: border-box; }
+    main { max-width: 850px; margin: 0 auto; padding: 3rem 1rem; }
+    header, .actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; }
+    h1 { margin: 0; font-size: 1.45rem; }
+    p { line-height: 1.5; }
+    .muted, th { color: #a3adc2; }
+    .panel { margin: 1.25rem 0; border: 1px solid #293146; border-radius: 1rem; background: #111625; overflow: hidden; }
+    .empty, .purchase-form { padding: 1.25rem; }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; min-width: 34rem; border-collapse: collapse; }
+    caption { text-align: left; padding: .85rem 1rem .25rem; color: #a3adc2; font-size: .8rem; }
+    th, td { padding: .65rem 1rem; text-align: right; white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { font-size: .74rem; text-transform: uppercase; }
+    .position { background: #181e30; font-weight: bold; }
+    .history-heading th, .history td { font-size: .8rem; }
+    .history td { border-top: 1px solid #20273a; }
+    .gain { color: #6ee7b7; }
+    .loss { color: #fda4af; }
+    .actions { justify-content: flex-start; }
+    button, .button, select, input { font: inherit; }
+    button, .button { display: inline-block; padding: .65rem .9rem; border-radius: .65rem; border: 1px solid #36405a; background: #191f30; color: #e5e7eb; text-decoration: none; cursor: pointer; }
+    .primary { color: #67e8f9; background: #0c2d3b; border-color: #186174; }
+    button:hover, .button:hover { filter: brightness(1.2); }
+    :focus-visible { outline: 2px solid #67e8f9; outline-offset: 3px; }
+    .purchase-form { display: grid; gap: 1rem; }
+    label { display: grid; gap: .45rem; }
+    input, select { min-width: 0; width: 100%; border: 1px solid #36405a; border-radius: .55rem; background: #181e30; color: inherit; padding: .65rem; }
+    .error { color: #fda4af; }
+  </style>
+</head>
+<body>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

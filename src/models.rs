@@ -12,3 +12,16 @@ pub struct UserRecord {
     pub username: String,
     pub password_hash: String,
 }
+
+pub struct Purchase {
+    pub asset: Asset,
+    pub quantity: f64,
+    pub unit_price: f64,
+    pub purchased_at: String,
+}
+
+impl Purchase {
+    pub fn change(&self) -> f64 {
+        (self.asset.unit_value - self.unit_price) * self.quantity
+    }
+}

@@ -6,7 +6,7 @@ use oracledb::{Error, ErrorKind, Row};
 use crate::{
     app::AppState,
     db::{Database, DatabaseError},
-    models::{Asset, UserRecord},
+    models::{Asset, Purchase, UserRecord},
 };
 
 pub struct Repository {
@@ -14,6 +14,51 @@ pub struct Repository {
 }
 
 impl Repository {
+    pub async fn list_purchases(&self, user_id: i64) -> Result<Vec<Purchase>, DatabaseError> {
+        self.db
+            .run(move |conn| {
+                conn.query(
+                    "SELECT a.id, a.name, a.unit_value, p.quantity, p.unit_price,
+                        TO_CHAR(p.purchased_at, 'YYYY-MM-DD HH24:MI')
+                 FROM purchases p JOIN assets a ON a.id = p.asset_id
+                 WHERE p.user_id = :1
+                 ORDER BY a.name, a.id, p.purchased_at DESC, p.id DESC",
+                    &[&user_id],
+                )?
+                .map(|row| {
+                    let row = row?;
+                    Ok(Purchase {
+                        quantity: row.get(3)?,
+                        unit_price: row.get(4)?,
+                        purchased_at: row.get(5)?,
+                        asset: read_asset(row)?,
+                    })
+                })
+                .collect()
+            })
+            .await
+    }
+
+    pub async fn register_purchase(
+        &self,
+        user_id: i64,
+        asset_id: i64,
+        quantity: f64,
+        unit_price: f64,
+    ) -> Result<bool, DatabaseError> {
+        self.db
+            .run(move |conn| {
+                let result = conn.execute(
+                    "INSERT INTO purchases (user_id, asset_id, quantity, unit_price)
+                 SELECT :1, id, :2, :3 FROM assets WHERE id = :4",
+                    &[&user_id, &quantity, &unit_price, &asset_id],
+                )?;
+                conn.commit()?;
+                Ok(result.rows_affected() == 1)
+            })
+            .await
+    }
+
     pub async fn list_assets(&self) -> Result<Vec<Asset>, DatabaseError> {
         self.db
             .run(|conn| {
