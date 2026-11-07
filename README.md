@@ -18,6 +18,20 @@ Aplicação fullstack em Rust para cadastrar e consultar ativos de investimento.
 
 ![Carteira do FinTrack com posições e histórico de compras](docs/images/fintrack-carteira.jpg)
 
+## Dados no Oracle
+
+### Compras gravadas
+
+A consulta no SQL Developer mostra as compras registradas em `PURCHASES`, com o usuário, o ativo, a quantidade, o preço pago por unidade e a data da operação.
+
+![Compras gravadas na tabela PURCHASES no SQL Developer](docs/images/oracle-compras.jpg)
+
+### Hash da senha
+
+A tabela `USERS` guarda o hash Argon2id da senha. A consulta exibe apenas o prefixo do hash.
+
+![Consulta à tabela USERS com o hash mascarado no SQL Developer](docs/images/oracle-hash.jpg)
+
 ## Tecnologias e estrutura MVC
 
 - **Model** — `src/models.rs` define ativos, usuários e compras. `src/repository.rs` concentra consultas e transações Oracle. `src/db.rs` configura o pool de conexões e executa o driver síncrono fora das threads assíncronas do Tokio.
